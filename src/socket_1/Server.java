@@ -49,5 +49,7 @@ public class Server {
         server.start();
         System.out.println("end");
         System.out.println("end");
+
+        System.out.println("end");
     }
 }
