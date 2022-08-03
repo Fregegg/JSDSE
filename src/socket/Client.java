@@ -3,9 +3,11 @@ package socket;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
 public class Client {
-    // Socket 封装了TCP/IP协议
+    // Socket 封装了TCP协议的通讯细节，使用它可以与远端计算机额建立TCP连接
+//    并基于两个流与远端计算机进行双向通讯
     private Socket socket;//套接字
     public Client(){
         /*
@@ -25,6 +27,7 @@ public class Client {
             e.printStackTrace();
         }
     }
+    Scanner scanner = new Scanner(System.in);
     public void start(){
         //客户端向服务端发送数据需要使用socket获取输出流
         try {
@@ -33,9 +36,26 @@ public class Client {
                     (new BufferedWriter
                             (new OutputStreamWriter
                                     (out, StandardCharsets.UTF_8)),true);
-            pw.println("你好服务端！");
+            String line;
+            while(true){
+                line = scanner.nextLine();
+                if ("exit".equals(line)){
+                    break;
+                }
+                pw.println(line);
+            }
         } catch (IOException e) {
             e.printStackTrace();
+        }finally{
+            try {
+                /*
+                Socket的close方法里封装了与服务端的4次挥手操作，与服务端断开连接
+                并且该close还会再内部将通过socket获取的输入流和输出流关闭
+                 */
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

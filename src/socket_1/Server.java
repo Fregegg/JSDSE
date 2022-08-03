@@ -26,30 +26,22 @@ public class Server {
             InputStream is = socket.getInputStream();
             InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
             BufferedReader br = new BufferedReader(isr);
-
-            while(true){
-                String line=br.readLine();
-                if (line.equals("exit")){
+            String line;
+            while((line=br.readLine())!=null){
+                System.out.println("客户端："+line);
+                if ("exit".equals(line)){
                     System.out.println("已结束对话");
                     socket.close();
                     break;
                 }
-                    System.out.println("客户端："+line);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    public void isBreak(){
 
-    }
-
-    public static void main(String[] args) {
+    public static void main(String[] args){
         Server server =new Server();
         server.start();
-        System.out.println("end");
-        System.out.println("end");
-
-        System.out.println("end");
     }
 }

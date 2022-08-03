@@ -26,7 +26,7 @@ public class Client {
             while(true){
                 Scanner scanner = new Scanner(System.in);
                 String line = scanner.nextLine();
-                if (line.equals("exit")){
+                if ("exit".equals(line)){
                     System.out.println("已退出连接");
                     socket.close();
                     break;

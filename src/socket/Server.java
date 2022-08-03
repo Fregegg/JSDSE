@@ -32,8 +32,10 @@ public class Server {
             InputStream is = socket.getInputStream();
             BufferedReader br = new BufferedReader
                     (new InputStreamReader(is, StandardCharsets.UTF_8));
-            line=br.readLine();
-            System.out.println("客户端说："+line);
+
+            while((line=br.readLine())!=null){
+                System.out.println("客户端说："+line);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
