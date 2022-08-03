@@ -1,4 +1,4 @@
-package socket_1;
+package socket.socket_1;
 
 import java.io.*;
 import java.net.Socket;

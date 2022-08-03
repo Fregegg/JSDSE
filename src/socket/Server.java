@@ -27,15 +27,10 @@ public class Server {
                 System.out.println("等待客户端连接");
                 Socket socket = serverSocket.accept();
                 System.out.println("一个客户端连接了");
-                String line;
-                //通过刚接受链接的socket获取输入流来读取该客户端发送来的消息
-                InputStream is = socket.getInputStream();
-                BufferedReader br = new BufferedReader
-                        (new InputStreamReader(is, StandardCharsets.UTF_8));
 
-                while((line=br.readLine())!=null){
-                    System.out.println("客户端说："+line);
-                }
+                Runnable handler = new ClientHandler(socket);
+                Thread t= new Thread(handler);
+                t.start();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -47,5 +42,27 @@ public class Server {
     public static void main(String[] args) {
         Server server = new Server();
         server.start();
+    }
+
+    private class ClientHandler implements Runnable{
+        private Socket socket;
+        public ClientHandler(Socket socket){
+            this.socket=socket;
+        }
+        public void run(){
+            try {
+                String line;
+                //通过刚接受链接的socket获取输入流来读取该客户端发送来的消息
+                InputStream is = socket.getInputStream();
+                BufferedReader br = new BufferedReader
+                        (new InputStreamReader(is, StandardCharsets.UTF_8));
+
+                while((line=br.readLine())!=null){
+                    System.out.println("客户端说："+line);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
