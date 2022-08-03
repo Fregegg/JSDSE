@@ -13,7 +13,7 @@ public class Server {
 
     public Server() {
         try {
-            serverSocket = new ServerSocket(8088);
+            serverSocket = new ServerSocket(8011);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -62,8 +62,8 @@ public class Server {
                 String line;
                 while ((line = br.readLine()) != null) {
                     System.out.println(host+"说：" + line);
-
                 }
+                System.out.println(host+"已退出连接");
             } catch (IOException e) {
                 e.printStackTrace();
             }

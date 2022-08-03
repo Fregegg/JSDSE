@@ -11,7 +11,7 @@ public class ThreadInfoDemo {
         String name = t.getName();
         //获取唯一标识
         Long id = t.getId();
-        //获取线程优先级 0-10 默认值5
+        //获取线程优先级 1-10 默认值5
         int priority = t.getPriority();
         //线程是否还活着
         boolean isAlive = t.isAlive();

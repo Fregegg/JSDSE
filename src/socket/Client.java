@@ -21,7 +21,7 @@ public class Client {
         try {
             System.out.println("正在连接服务端......");
             //localhost代表本机ip   实例化的过程就是连接的过程
-            socket = new Socket("localhost",8088);
+            socket = new Socket("localhost",8011);
             System.out.println("与服务端建立连接");
         } catch (IOException e) {
             e.printStackTrace();
@@ -50,7 +50,7 @@ public class Client {
             try {
                 /*
                 Socket的close方法里封装了与服务端的4次挥手操作，与服务端断开连接
-                并且该close还会再内部将通过socket获取的输入流和输出流关闭
+                并且该close还会在内部将通过socket获取的输入流和输出流关闭
                  */
                 socket.close();
             } catch (IOException e) {
@@ -64,3 +64,4 @@ public class Client {
         client.start();
     }
 }
+

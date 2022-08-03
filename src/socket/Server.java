@@ -7,13 +7,25 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-
+/**
+ * 聊天室服务端
+ */
 public class Server {
+    /*
+        运行在服务端的ServerSocket,主要作用两个:
+        1:开启服务端口,客户端就是通过这个端口与服务端建立连接的.(ServerSocket构造方法)
+        2:监听该端口,一旦一个客户端连接时,就会返回一个Socket实例与其通讯.(accept()方法的作用)
+     */
     //ServerSocket总机
     private ServerSocket serverSocket;
     public Server(){
         try {
             System.out.println("正在启动服务端···");
+             /*
+                如果执行下面代码出现异常:
+                java.net.BindException:address already in use
+                原因是申请的8088端口已经被系统其它程序占用了.
+             */
             serverSocket = new ServerSocket(8088);
             System.out.println("服务端启动完毕");
         } catch (IOException e) {
@@ -27,7 +39,7 @@ public class Server {
                 System.out.println("等待客户端连接");
                 Socket socket = serverSocket.accept();
                 System.out.println("一个客户端连接了");
-
+                //启动一个线程负责处理该客户端交互
                 Runnable handler = new ClientHandler(socket);
                 Thread t= new Thread(handler);
                 t.start();
@@ -43,9 +55,14 @@ public class Server {
         Server server = new Server();
         server.start();
     }
-
+    /**
+     * 该线程任务负责与指定客户端进行交互
+     */
     private class ClientHandler implements Runnable{
+        //记录当前对应客户端的IP地址
+        private String host;
         private Socket socket;
+        //通过socket获取远端计算机IP地址(获取到了客户端的)
         public ClientHandler(Socket socket){
             this.socket=socket;
         }

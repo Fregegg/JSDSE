@@ -1,26 +1,24 @@
-package socket.socket_2;
+package socket.socket_4;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
 public class Client {
-    private Socket socket ;
-
+    private Socket socket;
     public Client(){
         try {
-            socket = new Socket("localhost",8088);
+            socket = new Socket("localhost",8111);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
     public void start(){
         try {
             OutputStream os = socket.getOutputStream();
             PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(os)));
+            Scanner scanner = new Scanner(System.in);
             while(true){
-                Scanner scanner = new Scanner(System.in);
                 String line = scanner.nextLine();
                 if ("exit".equals(line)){
                     break;
@@ -29,17 +27,18 @@ public class Client {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }finally{
+        }finally {
             try {
                 socket.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+
     }
 
     public static void main(String[] args) {
-        Client client = new Client();
+        Client client= new Client();
         client.start();
     }
 }
