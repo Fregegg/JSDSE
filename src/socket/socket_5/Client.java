@@ -1,35 +1,40 @@
-package socket.socket_2;
+package socket.socket_5;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 public class Client {
-    private Socket socket ;
+    private Socket socket;
 
     public Client(){
         try {
-            socket = new Socket("localhost",8111);
+            socket = new Socket("localhost",8088);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+
     public void start(){
         try {
-            OutputStream os = socket.getOutputStream();
-            PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(os)),true);
+            OutputStream os= socket.getOutputStream();
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8));
+            PrintWriter pw = new PrintWriter(bw,true);
+
+            Scanner scanner = new Scanner(System.in);
             while(true){
-                Scanner scanner = new Scanner(System.in);
-                String line = scanner.nextLine();
+                String line= scanner.nextLine();
                 if ("exit".equals(line)){
+                    System.out.println("客户端已退出连接");
                     break;
                 }
                 pw.println(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }finally{
+        }finally {
             try {
                 socket.close();
             } catch (IOException e) {

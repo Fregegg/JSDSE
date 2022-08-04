@@ -1,20 +1,10 @@
+import java.io.File;
+
 public class Test {
-
-}
-interface Er{
-    void close();
-}
-
-class Aoo implements Er{
-    public void close(){
-
-    }
-
     public static void main(String[] args) {
-        System.out.println('2'+'2');
+        for (int i = 0; i < 10; i++) {
+            File dir = new File("./a/"+i);
+            dir.mkdirs();
+        }
     }
-
-}
-class BOO extends Aoo{
-
 }

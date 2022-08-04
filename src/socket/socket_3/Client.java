@@ -20,7 +20,7 @@ public class Client {
         try {
             Scanner scanner = new Scanner(System.in);
             OutputStream os = socket.getOutputStream();
-            PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8)));
+            PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8)),true);
             while(true){
                 String line = scanner.nextLine();
                 if ("exit".equals(line)){

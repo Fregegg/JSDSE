@@ -21,7 +21,7 @@ public class Client {
         try {
             System.out.println("正在连接服务端......");
             //localhost代表本机ip   实例化的过程就是连接的过程
-            socket = new Socket("localhost",8011);
+            socket = new Socket("localhost",8088);
             System.out.println("与服务端建立连接");
         } catch (IOException e) {
             e.printStackTrace();

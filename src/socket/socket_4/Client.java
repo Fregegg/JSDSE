@@ -2,6 +2,7 @@ package socket.socket_4;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 public class Client {
@@ -16,7 +17,7 @@ public class Client {
     public void start(){
         try {
             OutputStream os = socket.getOutputStream();
-            PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(os)));
+            PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8)),true);
             Scanner scanner = new Scanner(System.in);
             while(true){
                 String line = scanner.nextLine();
