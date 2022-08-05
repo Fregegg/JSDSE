@@ -1,4 +1,4 @@
-package socket;
+package socket.socket_7;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -61,7 +61,7 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        Server server = new Server();
+        socket.Server server = new socket.Server();
         server.start();
     }
     /**
@@ -122,3 +122,4 @@ public class Server {
         }
     }
 }
+
