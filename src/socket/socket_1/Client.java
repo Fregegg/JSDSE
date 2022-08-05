@@ -10,7 +10,7 @@ public class Client {
 
     public Client() {
         try {
-            socket = new Socket("localhost", 8011);
+            socket = new Socket("localhost", 8088);
             System.out.println("与服务端连接成功！");
         } catch (IOException e) {
             e.printStackTrace();
@@ -18,24 +18,29 @@ public class Client {
     }
 
     public void start() {
+        Runnable handler = new ServerHandler();
+        Thread thread = new Thread(handler);
+        thread.setDaemon(true);
+        thread.start();
         try {
-            OutputStream os = socket.getOutputStream();
-            OutputStreamWriter osw = new OutputStreamWriter(os, StandardCharsets.UTF_8);
-            BufferedWriter bw = new BufferedWriter(osw);
-            PrintWriter pw = new PrintWriter(bw, true);
+            PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(),StandardCharsets.UTF_8)),true);
+            Scanner scanner = new Scanner(System.in);
             while(true){
-                Scanner scanner = new Scanner(System.in);
                 String line = scanner.nextLine();
                 if ("exit".equals(line)){
                     System.out.println("已退出连接");
-                    socket.close();
                     break;
                 }
                 pw.println(line);
             }
-
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -43,5 +48,20 @@ public class Client {
         Client client = new Client();
         client.start();
 
+    }
+    private class ServerHandler implements Runnable{
+
+        public void run(){
+            try {
+                BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
+                String line;
+                while((line= br.readLine())!=null){
+                    System.out.println(line);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 }
