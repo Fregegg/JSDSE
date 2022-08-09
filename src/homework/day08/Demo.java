@@ -20,9 +20,9 @@ public class Demo {
         Collection c = new ArrayList();
         c.add(p);//{[1,2]}
         test(s,a,p,c);
-        System.out.println("s:"+s);//? "helloworld"
-        System.out.println("a:"+a);//? 2
-        System.out.println("p:"+p);//?[7,5]
+        System.out.println("s:"+s);//? "hello"
+        System.out.println("a:"+a);//? 1
+        System.out.println("p:"+p);//?[3，2]
         System.out.println("c:"+c);//?{[7,5]}
     }
     public static void test(String s,int a,Point p,Collection c) {

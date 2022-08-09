@@ -17,7 +17,7 @@ public class Client {
     }
 
     public void start(){
-        ServerHandler serverHandler = new ServerHandler(socket);
+        ServerHandler serverHandler = new ServerHandler();
         Thread thread = new Thread(serverHandler);
         thread.setDaemon(true);
         thread.start();
@@ -25,8 +25,9 @@ public class Client {
         Scanner scanner = new Scanner(System.in);
         try {
             PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8)),true);
+            String line=null;
             while(true){
-                String line = scanner.nextLine();
+                line = scanner.nextLine();
                 if ("exit".equals(line)) {
                     break;
                 }
@@ -52,16 +53,12 @@ public class Client {
     }
 
     private class ServerHandler implements Runnable{
-        private String host;
-        public ServerHandler(Socket socket){
-            host=socket.getInetAddress().getHostAddress();
-        }
         public void run(){
             try {
                 BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
                 String line;
                 while ((line = br.readLine()) != null) {
-                    System.out.println(host+": "+line);
+                    System.out.println(line);
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);

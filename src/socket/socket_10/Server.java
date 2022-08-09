@@ -4,11 +4,13 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 
 public class Server {
-    private ServerSocket serverSocket;
-    private PrintWriter[] allOut={};
+    private final ServerSocket serverSocket;
+    private final Collection<PrintWriter> allOut = new ArrayList<>();
     public Server(){
         try {
             serverSocket = new ServerSocket(8088);
@@ -19,12 +21,15 @@ public class Server {
     }
     public void start(){
         try {
-            Socket socket = serverSocket.accept();
-            ClientHandler handler = new ClientHandler(socket);
-            Thread thread = new Thread(handler);
-            thread.start();
+            //noinspection InfiniteLoopStatement
+            while (true) {
+                Socket socket = serverSocket.accept();
+                ClientHandler handler = new ClientHandler(socket);
+                Thread thread = new Thread(handler);
+                thread.start();
+            }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -35,8 +40,8 @@ public class Server {
 
     private class ClientHandler implements Runnable{
         PrintWriter pw=null;
-        private String host;
-        private Socket socket;
+        private final String host;
+        private final Socket socket;
         public ClientHandler(Socket socket){
             host = socket.getInetAddress().getHostAddress();
             this.socket=socket;
@@ -44,9 +49,8 @@ public class Server {
 
         public void sendMessage(String line ){
             System.out.println(line);
-            for (int i = 0; i < allOut.length; i++) {
-                allOut[i].println(line);
-
+            for(PrintWriter pw : allOut){
+                pw.println(line);
             }
         }
 
@@ -57,9 +61,9 @@ public class Server {
                 BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream(),StandardCharsets.UTF_8));
 
                 synchronized (Server.this) {
-                    allOut = Arrays.copyOf(allOut,allOut.length+1);
-                    allOut[allOut.length-1]=pw;
+                    allOut.add(pw);
                 }
+                sendMessage(host + "上线了，当前在线人数：" + allOut.size());
 
                 String line;
                 while((line=br.readLine())!=null){
@@ -71,15 +75,11 @@ public class Server {
                 throw new RuntimeException(e);
             } finally {
                 synchronized (Server.this) {
-                    for (int i = 0; i < allOut.length; i++) {
-                        if(allOut[i]==pw){
-                            allOut[i]=allOut[allOut.length-1];
-                            allOut = Arrays.copyOf(allOut,allOut.length-1);
-                            break;
-                        }
-                    }
+                    allOut.remove(pw);
                 }
             }
+            sendMessage(host + "下线了，当前在线人数：" + allOut.size());
+
         }
     }
 

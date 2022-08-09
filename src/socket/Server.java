@@ -4,7 +4,8 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * 聊天室服务端
@@ -25,7 +26,8 @@ public class Server {
     //ServerSocket总机
     private ServerSocket serverSocket;
     //保存所有客户端的输出流，用于广播消息
-    private PrintWriter[] allOut = {};
+//    private PrintWriter[] allOut = {};
+    private final Collection<PrintWriter> allOut = new ArrayList<>();
 
     public Server() {
         try {
@@ -71,8 +73,8 @@ public class Server {
      */
     private class ClientHandler implements Runnable {
         //记录当前对应客户端的IP地址
-        private String host;
-        private Socket socket;
+        private final String host;
+        private final Socket socket;
 
         //通过socket获取远端计算机IP地址(获取到了客户端的)
         public ClientHandler(Socket socket) {
@@ -91,14 +93,17 @@ public class Server {
                 OutputStream os = socket.getOutputStream();
                 pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8)), true);
                 //上线：数组扩容
-                synchronized(Server.this){//加锁，预防线程安全问题
+//                synchronized(Server.this){//加锁，预防线程安全问题
                     //不能用this,this在这里指向不同的对象，是不同的ClientHandler实例
                     //不能用allOut数组作为监视器对象，因为数组的扩容是创建新的长度+1的数组,对象是变化的
                     //将该输出流存入到共享数组allOut中
-                    allOut = Arrays.copyOf(allOut, allOut.length + 1);
-                    allOut[allOut.length - 1] = pw;
+//                    allOut = Arrays.copyOf(allOut, allOut.length + 1);
+//                    allOut[allOut.length - 1] = pw;
+                    //如果是集合，可以用allOut
+                synchronized(allOut){
+                    allOut.add(pw);
                 }
-                sendMessage(host + "上线了，当前在线人数：" + allOut.length);
+                sendMessage(host + "上线了，当前在线人数：" + allOut.size());
 
                 while ((line = br.readLine()) != null) {
                     sendMessage(host + ": " + line);
@@ -113,8 +118,9 @@ public class Server {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                //下线:将pw从allOut中删除
+                //客户端下线:将pw从allOut中删除
                 synchronized (Server.this) {
+                    /*
                     for (int i = 0; i < allOut.length; i++) {
                         if (allOut[i] == pw) {
                             allOut[i] = allOut[allOut.length - 1];
@@ -122,15 +128,19 @@ public class Server {
                             break;
                         }
                     }
+
+                     */
+                    allOut.remove(pw);
+
                 }
-                sendMessage(host + "下线了，当前在线人数：" + allOut.length);
+                sendMessage(host + "下线了，当前在线人数：" + allOut.size());
             }
         }
         //将消息发送给所有客户端
         public void sendMessage(String message) {
             System.out.println(message);
             //将消息发送给客户端
-            synchronized (Server.this) {
+            synchronized (allOut) {
                 for (PrintWriter printWriter : allOut) {
                     printWriter.println(message);
                 }
