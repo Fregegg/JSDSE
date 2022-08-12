@@ -1,9 +1,8 @@
-package Collection;
+package collection;
 
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
 public class CollectionDemo4 {
     public static void main(String[] args) {
